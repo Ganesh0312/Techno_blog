@@ -11,6 +11,7 @@ import PrivateRoutes from "./components/PrivateRoutes";
 import OnlyAdminPrivateRoutes from "./components/onlyAdminPrivateRoute";
 import CreatePost from "./pages/CreatePost";
 import UpdatePost from "./pages/UpdatePost";
+import PostPage from "./pages/PostPage";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/post/:postSlug" element={<PostPage />} />
           <Route element={<PrivateRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>

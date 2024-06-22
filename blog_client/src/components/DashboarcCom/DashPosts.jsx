@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-// import { set } from "mongoose";
 
 export default function DashPosts() {
   const { currentUser } = useSelector((state) => state.user);
@@ -86,8 +85,8 @@ export default function DashPosts() {
                 <span>Edit</span>
               </Table.HeadCell>
             </Table.Head>
-            {userPosts.map((post, index) => (
-              <Table.Body key={index} className="divide-y">
+            {userPosts.map((post) => (
+              <Table.Body key={post._id} className="divide-y">
                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>
                     {new Date(post.updatedAt).toLocaleDateString()}
