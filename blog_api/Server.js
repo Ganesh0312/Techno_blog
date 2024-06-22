@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import userRouters from "./routers/userRoute.js";
 import authRouter from "./routers/authRouter.js";
 import postRoute from "./routers/postRoutes.js";
+import commentRoutes from "./routers/commentsRoutes.js";
 app.use(express.json());
 app.use(cookieParser());
 
@@ -27,6 +28,8 @@ app.listen(8080, () => {
 app.use("/api/user", userRouters);
 app.use("/api/auth", authRouter);
 app.use("/api/post", postRoute);
+app.use("/api/comment", commentRoutes);
+
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
