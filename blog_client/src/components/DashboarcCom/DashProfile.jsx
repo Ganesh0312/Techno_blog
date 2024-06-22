@@ -10,18 +10,14 @@ import {
 import { app } from "../../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-// import {
-//   updateStart,
-//   updateSuccess,
-//   updateFailure,
-//   deleteUserStart,
-//   deleteUserSuccess,
-//   deleteUserFailure,
-//   signoutSuccess,
-// } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
+import {
+  updateFailure,
+  updateStart,
+  updateSuccess,
+} from "../../redux/user/useSlice";
 
 export default function DashProfile() {
   const { currentUser, error, loading } = useSelector((state) => state.user);
@@ -96,58 +92,59 @@ export default function DashProfile() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
+  console.log(formData);
 
-  //   const handleSubmit = async (e) => {
-  //     e.preventDefault();
-  //     setUpdateUserError(null);
-  //     setUpdateUserSuccess(null);
-  //     if (Object.keys(formData).length === 0) {
-  //       setUpdateUserError("No changes made");
-  //       return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setUpdateUserError(null);
+    setUpdateUserSuccess(null);
+    if (Object.keys(formData).length === 0) {
+      setUpdateUserError("No changes made");
+      return;
+    }
+    if (imageFileUploading) {
+      setUpdateUserError("Please wait for image to upload");
+      return;
+    }
+    try {
+      dispatch(updateStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(updateFailure(data.message));
+        setUpdateUserError(data.message);
+      } else {
+        dispatch(updateSuccess(data));
+        setUpdateUserSuccess("User's profile updated successfully");
+      }
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+      setUpdateUserError(error.message);
+    }
+  };
+  // const handleDeleteUser = async () => {
+  //   setShowModal(false);
+  //   try {
+  //     dispatch(deleteUserStart());
+  //     const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+  //       method: "DELETE",
+  //     });
+  //     const data = await res.json();
+  //     if (!res.ok) {
+  //       dispatch(deleteUserFailure(data.message));
+  //     } else {
+  //       dispatch(deleteUserSuccess(data));
   //     }
-  //     if (imageFileUploading) {
-  //       setUpdateUserError("Please wait for image to upload");
-  //       return;
-  //     }
-  //     try {
-  //       dispatch(updateStart());
-  //       const res = await fetch(`/api/user/update/${currentUser._id}`, {
-  //         method: "PUT",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(formData),
-  //       });
-  //       const data = await res.json();
-  //       if (!res.ok) {
-  //         dispatch(updateFailure(data.message));
-  //         setUpdateUserError(data.message);
-  //       } else {
-  //         dispatch(updateSuccess(data));
-  //         setUpdateUserSuccess("User's profile updated successfully");
-  //       }
-  //     } catch (error) {
-  //       dispatch(updateFailure(error.message));
-  //       setUpdateUserError(error.message);
-  //     }
-  //   };
-  //   const handleDeleteUser = async () => {
-  //     setShowModal(false);
-  //     try {
-  //       dispatch(deleteUserStart());
-  //       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-  //         method: "DELETE",
-  //       });
-  //       const data = await res.json();
-  //       if (!res.ok) {
-  //         dispatch(deleteUserFailure(data.message));
-  //       } else {
-  //         dispatch(deleteUserSuccess(data));
-  //       }
-  //     } catch (error) {
-  //       dispatch(deleteUserFailure(error.message));
-  //     }
-  //   };
+  //   } catch (error) {
+  //     dispatch(deleteUserFailure(error.message));
+  //   }
+  // };
 
   //   const handleSignout = async () => {
   //     try {
@@ -167,8 +164,8 @@ export default function DashProfile() {
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
-      <form className="flex flex-col gap-4">
-        {/* onSubmit={handleSubmit} */}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {/*  */}
         <input
           type="file"
           accept="image/*"
