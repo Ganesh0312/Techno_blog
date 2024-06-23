@@ -5,7 +5,10 @@
   "main": "Server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build":"npm install --prefix blog_api && npm install --prefix blog_client && npm run build --prefix blog_client "
+    "install:api": "npm install --prefix blog_api",
+    "install:client": "npm install --prefix blog_client",
+    "build:client": "npm run build --prefix blog_client",
+    "build": "npm run install:api && npm run install:client && npm run build:client"
   },
   "author": "",
   "license": "ISC"
